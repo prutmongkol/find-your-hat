@@ -84,6 +84,13 @@
 //      INTERMISSION 2: Fix bug
 //      -   There is an array reference error when moving out-of-bound in the Y axis.
 //      -   Bug is fixed by moving the if statement that evaluates isInBoundaries to the top of the if-else chain.
+//
+//      Back to gameLoop() method:
+//      -   If player is out-of-bound, player's position is revert back, and log a warning message.
+//      -   If player lands on a hold or the hat, the game over with relevant message logged, and the program ends.
+//      -   Otherwise, the loop continues. 
+//
+//
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
