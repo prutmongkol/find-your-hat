@@ -105,12 +105,15 @@
 //          4. Then, it sets the playerCharacter to (0, 0) coordinate.
 //      -   The position of holes and the hat are now randomized.
 //      -   The player starting position is still fixed at (0, 0). The method will be refactored to randomized the starting position at later steps.
-//      -   The method return a new Field object. It's behave like a factory function.
+//      -   The method returns a new Field object. It's behave like a factory function.
 //
 //  The steps following from codecademy ends here.
 //
-//  Step 5: Refactoring generateField() to random player's position as well.
-//      -   
+//  Step 5: Refactor generateField() to random player's position as well.
+//      1.  Player position is now randomized in a similar fashion as the hat and holes.
+//              - The position cannot be on a hole or the hat.
+//      2.  Refactor Field constructor to receive player starting X and Y coordinates
+//      3.  generateField() now returns a new Field object, supplying the field array, player's X position, and player's Y position.
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
