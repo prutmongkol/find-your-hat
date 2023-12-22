@@ -8,6 +8,7 @@
 // Please break down your thinking process step-by-step (mandatory)
 //
 // Firstly, the project is done by following a step-by-step guide on codecademy 'find your hat' project page.
+//
 //  Step 1: Create a field object
 //      1.  Create a myField object from the Field class, with pre-defined 2D array representing the field.
 //          The argument is put into this._field property, as seen in the constructor method of the Field class.
@@ -21,14 +22,42 @@
 //          ]);
 //      2.  Test that the field object is created successfully with the debug tool and observe myField variable.
 //
-//  Step 2: Create print method in Field class to print this._field property
+//  Step 2: Create print() method in Field class to print this._field property
 //      -   To avoid using console.log multiple times, the X axes (nested array) of this._field are joined together with .join() array method, ending with '\n' line break character.
 //      -   The resulting string is concatenated to the variable 'fieldString', which will be logged into the console later.
 //      -   The .forEach() method is used to interate through the Y axes of this._field.
 //      -   Log the variable 'fieldString'
 //
-//  Step 3: 
-
+//  Step 3.1: Create movePlayer() method in Field class
+//      Properties representing player's position
+//      -   The origin (i.e. (0, 0) coordinate) of the field is at the top-left of the field.
+//      -   For simplicity, the game starts with the player at (0, 0) for now.
+//      -   The following properties are added to facilitating moving the player through the field:
+//          -   'this._playerXPosition' represents the player's position on the x axis. The starting value is equal to 0.
+//          -   'this._playerYPosition' represents the player's position on the y axis. The starting value is equal to 0.
+//
+//      movePlayer() method, and why there are no separate moveRight, moveLeft, moveDown, and moveUp methods
+//      -   To move left, this._playerXPosition is decremented. i.e. (0, 0) -> (-1, 0)
+//      -   To move right, this._playerXPosition is incremented. i.e. (0, 0) -> (1, 0)
+//      -   To move up, this_playerYPosition is decremented. i.e. (0, 0) -> (0, -1)
+//      -   To move down, this_playerYPosition is incremented. i.e. (0, 0) -> (0, 1)
+//      Due to the design, each of the four move methods will only have one line of code (e.g. return this._playerYPosition--;).
+//      Therefore, each of these players action are consolidated into a single movePlayer() method
+//
+//      -   The prompt asking for user's input is in movePlayer() method
+//
+//      The benefits of consolidated movePlayer() method
+//      -   The method may take an array argument representing a control scheme. This allows the control scheme to be configurable through the UI, if desired.
+//      
+//      Testing movePlayer() method
+//      -   Create a simply field object (the same as in Step 1)
+//      -   Call object.movePlayer(), enter an input
+//          move up 'w': the console should throw an error because '-1' is put in this._field[y][x]
+//          move left 'a':  the console should throw an error because '-1' is put in this._field[y][x]
+//          move right 'd' and move down 's' should work
+//      -   Call object.print()
+//          move right 'd': A new pathCharacter should print to the right of the starting point.
+//          move down 's': A new pathCharacter should print to the bottom of the starting point.
 
 
 const prompt = require('prompt-sync')({sigint: true});
@@ -58,7 +87,7 @@ class Field {
         console.log(fieldString);
     }
 
-    movePlayer(validDirection) {
+    movePlayer(validDirection = ['w', 'a', 's', 'd']) {
         let direction;
         do {
         direction = prompt('Which way? ').toLowerCase();
