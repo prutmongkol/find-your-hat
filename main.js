@@ -90,7 +90,27 @@
 //      -   If player lands on a hold or the hat, the game over with relevant message logged, and the program ends.
 //      -   Otherwise, the loop continues. 
 //
+//  Step 4: Create generateField() method
+//      -   The generateField() method accepts the following optional arguments:
+//          - 'x' represents the field horizontal length. Default to an integer (e.g. 10).
+//          - 'y' represents the field vertical length. Default to an integer (e.g. 10).
+//          - 'holePercent' represents the number of holes in percentage. Default to a number between 0 and 1 (e.g. 0.2.)
+//      -   The method works in the following steps:
+//          1. Create a 2D array filled with the variable fieldCharacter.
+//          2. Fill the array with holes.
+//              - The number of holes equals to (x * y * holePercent)
+//              - The resulting random position of a new hole should not be on an existing hole or the player starting position.
+//          3. Fill the array with a hat.
+//              - The resulting random position of the hat should not be on a hole or the player starting position.
+//          4. Then, it sets the playerCharacter to (0, 0) coordinate.
+//      -   The position of holes and the hat are now randomized.
+//      -   The player starting position is still fixed at (0, 0). The method will be refactored to randomized the starting position at later steps.
+//      -   The method return a new Field object. It's behave like a factory function.
 //
+//  The steps following from codecademy ends here.
+//
+//  Step 5: Refactoring generateField() to random player's position as well.
+//      -   
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
@@ -104,10 +124,10 @@ const playerCharacter = '☺';
 const controlScheme = ['w', 'a', 's', 'd']; // up, left, down, right
 
 class Field {
-    constructor(field) {
+    constructor(field, playerXPosition, playerYPosition) {
         this._field = field; // 2D Array
-        this._playerXPosition = 0;
-        this._playerYPosition = 0;
+        this._playerXPosition = playerXPosition;
+        this._playerYPosition = playerYPosition;
     }
 
     print(message = '') {
@@ -252,11 +272,15 @@ class Field {
             randomX = Math.floor(Math.random() * x);
             randomY = Math.floor(Math.random() * y);
         } while (fieldArray[randomY][randomX] === hole || (randomX === 0 || randomY === 0));
-        fieldArray[randomX][randomY] = hat;
+        fieldArray[randomY][randomX] = hat;
 
-        fieldArray[0][0] = playerCharacter;
+        do {
+            randomX = Math.floor(Math.random() * x);
+            randomY = Math.floor(Math.random() * y);
+        } while (fieldArray[randomY][randomX] === hole || fieldArray[randomY][randomX] === hat)
+        fieldArray[randomY][randomX] = playerCharacter;
 
-        return new Field(fieldArray);
+        return new Field(fieldArray, randomX, randomY);
     }
 }
 
