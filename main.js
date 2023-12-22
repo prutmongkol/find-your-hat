@@ -114,6 +114,10 @@
 //              - The position cannot be on a hole or the hat.
 //      2.  Refactor Field constructor to receive player starting X and Y coordinates
 //      3.  generateField() now returns a new Field object, supplying the field array, player's X position, and player's Y position.
+//
+//  Step 6: Refactor startGame() to allow players to choose field size
+//      - For simplicity, player can choose from small, medium, and large field (map) size.
+
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
@@ -151,7 +155,7 @@ class Field {
 
         do {
             direction = prompt(`Which way? ↑${up} ←${left} ↓${down} →${right}: `).toLowerCase();
-        } while( !validDirection.includes(direction) );
+        } while( direction !== up && direction !== left && direction !== down && direction !== right );
     
         const x = this._playerXPosition;
         const y = this._playerYPosition
@@ -292,16 +296,16 @@ class Field {
 const startGame = () => {
     clear();
     console.log(
-        `=====================\n` +
-        `    FIND YOUR HAT    \n` +
-        `=====================\n` +
+        `===============================\n` +
+        `         FIND YOUR HAT         \n` +
+        `===============================\n` +
         `\n` +
         ` ${playerCharacter} : This is you!\n` +
         ` ${hat} : This is your hat. Get it!\n` +
-        ` ${hole} : This is a hole. Avoid it!\n` +
-        `\n`
+        ` ${hole} : This is a hole. Avoid it!\n`
     );
-    const fieldSize = prompt(`Choose map size (S, M, L): `).toLowerCase();
+    
+    const fieldSize = prompt(`Choose map size - S, (M), L: `).toLowerCase();
     let myField;
 
     switch (fieldSize) {
@@ -317,7 +321,6 @@ const startGame = () => {
             break;
     }
 
-    // const myField = Field.generateField();
     myField.gameLoop();
 }
 
