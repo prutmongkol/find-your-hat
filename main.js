@@ -115,8 +115,11 @@
 //      2.  Refactor Field constructor to receive player starting X and Y coordinates
 //      3.  generateField() now returns a new Field object, supplying the field array, player's X position, and player's Y position.
 //
-//  Step 6: Refactor startGame() to allow players to choose field size
+//  The steps after this are bonus. They are not included in the rubric.
+//
+//  B1:  Refactor startGame() to allow players to choose field size.
 //      - For simplicity, player can choose from small, medium, and large field (map) size.
+//  B2: Add a simple loop in startGame() so that player can choose to play again after game over.
 
 
 const prompt = require('prompt-sync')({sigint: true});
@@ -294,34 +297,40 @@ class Field {
 }
 
 const startGame = () => {
-    clear();
-    console.log(
-        `===============================\n` +
-        `         FIND YOUR HAT         \n` +
-        `===============================\n` +
-        `\n` +
-        ` ${playerCharacter} : This is you!\n` +
-        ` ${hat} : This is your hat. Get it!\n` +
-        ` ${hole} : This is a hole. Avoid it!\n`
-    );
+    let playAgain;
     
-    const fieldSize = prompt(`Choose map size - S, (M), L: `).toLowerCase();
-    let myField;
-
-    switch (fieldSize) {
-        case 's': 
-            myField = Field.generateField(5, 5, 0.2);
-            break;
-        case 'l':
-            myField = Field.generateField(15, 15, 0.3);
-            break;
-        default:
-        case 'm':
-            myField = Field.generateField();
-            break;
-    }
-
-    myField.gameLoop();
+    do {
+        clear();
+        console.log(
+            `===============================\n` +
+            `         FIND YOUR HAT         \n` +
+            `===============================\n` +
+            `\n` +
+            ` ${playerCharacter} : This is you!\n` +
+            ` ${hat} : This is your hat. Get it!\n` +
+            ` ${hole} : This is a hole. Avoid it!\n`
+        );
+        
+        const fieldSize = prompt(`Choose map size - S, (M), L: `).toLowerCase();
+        let myField;
+    
+        switch (fieldSize) {
+            case 's': 
+                myField = Field.generateField(5, 5, 0.2);
+                break;
+            case 'l':
+                myField = Field.generateField(15, 15, 0.3);
+                break;
+            default:
+            case 'm':
+                myField = Field.generateField();
+                break;
+        }
+    
+        myField.gameLoop();
+    
+        playAgain = prompt('\nDo you want to play again? Y/(N): ').toLowerCase();
+    } while (playAgain === 'y');
 }
 
 startGame();
