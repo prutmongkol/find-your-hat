@@ -45,8 +45,6 @@
 //      Therefore, each of these players action are consolidated into a single movePlayer() method
 //
 //      -   The prompt asking for user's input is in movePlayer() method
-//
-//      The benefits of consolidated movePlayer() method
 //      -   The method may take an array argument representing a control scheme. This allows the control scheme to be configurable through the UI, if desired.
 //      
 //      Testing movePlayer() method
@@ -82,7 +80,10 @@
 //      -   Currently, the print() method invoke clear() function to clear the screen.
 //      -   This has a side-effect of clearing the warning message from gameLoop() when the player is out of bound.
 //      -   Now, the print() method receive an option message string to be printed after printing the field.
-
+//
+//      INTERMISSION 2: Fix bug
+//      -   There is an array reference error when moving out-of-bound in the Y axis.
+//      -   Bug is fixed by moving the if statement that evaluates isInBoundaries to the top of the if-else chain.
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
@@ -192,18 +193,18 @@ class Field {
             this.movePlayer(controlScheme);
             message = '';
 
-            if (this.isOnHole()) {
-                gameState = false;
-                isWon = false;
-            } else if (this.isOnHat()) {
-                gameState = false;
-                isWon = true;
-            } else if (!this.isInBoundaries()) {
+            if (!this.isInBoundaries()) {
                 message = "You can't move out-of-bound!";
                 this.revertPosition();
                 const x = this._playerXPosition;
                 const y = this._playerYPosition
                 this._field[y][x] = playerCharacter;
+            } else if (this.isOnHole()) {
+                gameState = false;
+                isWon = false;
+            } else if (this.isOnHat()) {
+                gameState = false;
+                isWon = true;
             } else {
                 const x = this._playerXPosition;
                 const y = this._playerYPosition
