@@ -107,7 +107,7 @@
 //      -   The player starting position is still fixed at (0, 0). The method will be refactored to randomized the starting position at later steps.
 //      -   The method returns a new Field object. It's behave like a factory function.
 //
-//  The steps following from codecademy ends here.
+//  The steps that follows codecademy ends here.
 //
 //  Step 5: Refactor generateField() to random player's position as well.
 //      1.  Player position is now randomized in a similar fashion as the hat and holes.
@@ -251,7 +251,7 @@ class Field {
         }
     }
 
-    static generateField(x = 10, y = 10, holePercent = 0.2) {
+    static generateField(x = 10, y = 10, holePercent = 0.25) {
         const fieldArray = [];
         for (let i = 0; i < y; i++) {
             const xAxis = [];
@@ -290,7 +290,34 @@ class Field {
 }
 
 const startGame = () => {
-    const myField = Field.generateField();
+    clear();
+    console.log(
+        `=====================\n` +
+        `    FIND YOUR HAT    \n` +
+        `=====================\n` +
+        `\n` +
+        ` ${playerCharacter} : This is you!\n` +
+        ` ${hat} : This is your hat. Get it!\n` +
+        ` ${hole} : This is a hole. Avoid it!\n` +
+        `\n`
+    );
+    const fieldSize = prompt(`Choose map size (S, M, L): `).toLowerCase();
+    let myField;
+
+    switch (fieldSize) {
+        case 's': 
+            myField = Field.generateField(5, 5, 0.2);
+            break;
+        case 'l':
+            myField = Field.generateField(15, 15, 0.3);
+            break;
+        default:
+        case 'm':
+            myField = Field.generateField();
+            break;
+    }
+
+    // const myField = Field.generateField();
     myField.gameLoop();
 }
 
