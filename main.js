@@ -147,8 +147,10 @@ class Field {
 
     movePlayer(validDirection = ['w', 'a', 's', 'd']) {
         let direction;
+        const [up, left, down, right] = validDirection;
+
         do {
-        direction = prompt('Which way? ').toLowerCase();
+            direction = prompt(`Which way? ↑${up} ←${left} ↓${down} →${right}: `).toLowerCase();
         } while( !validDirection.includes(direction) );
     
         const x = this._playerXPosition;
@@ -156,16 +158,16 @@ class Field {
         this._field[y][x] = pathCharacter;
 
         switch (direction) {
-        case validDirection[0]:
+        case up:
             this._playerYPosition--;
             break;
-        case validDirection[1]:
+        case left:
             this._playerXPosition--;
             break;
-        case validDirection[2]:
+        case down:
             this._playerYPosition++;
             break;
-        case validDirection[3]:
+        case right:
             this._playerXPosition++;
             break;
         }
@@ -289,15 +291,6 @@ class Field {
 
 const startGame = () => {
     const myField = Field.generateField();
-    console.log(
-        `- Input -\n` +
-        `    ↑    \n` +
-        `    W    \n` +
-        `← A D S →\n` +
-        `    ↓    \n` +
-        `---------`
-    );
-
     myField.gameLoop();
 }
 
