@@ -138,12 +138,12 @@
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
 
-const hat = '^';
-const hole = 'O';
-const fieldCharacter = '░';
-const pathCharacter = '*';
+const hat = '🧢';
+const hole = '⚫';
+const fieldCharacter = '⬜';
+const pathCharacter = '🟫';
 
-const playerCharacter = '☺';
+const playerCharacter = '😀';
 const controlScheme = ['w', 'a', 's', 'd']; // up, left, down, right
 const holeTimer = 4;
 
