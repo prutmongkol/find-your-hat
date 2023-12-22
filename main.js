@@ -107,7 +107,7 @@
 //      -   The player starting position is still fixed at (0, 0). The method will be refactored to randomized the starting position at later steps.
 //      -   The method returns a new Field object. It's behave like a factory function.
 //
-//  The steps that follows codecademy ends here.
+//  The steps that follows codecademy end here.
 //
 //  Step 5: Refactor generateField() to random player's position as well.
 //      1.  Player position is now randomized in a similar fashion as the hat and holes.
@@ -117,9 +117,22 @@
 //
 //  The steps after this are bonus. They are not included in the rubric.
 //
-//  B1:  Refactor startGame() to allow players to choose field size.
+//  B1: Refactor startGame() to allow players to choose field size.
 //      - For simplicity, player can choose from small, medium, and large field (map) size.
 //  B2: Add a simple loop in startGame() so that player can choose to play again after game over.
+//
+//  B3: Add Hard Mode, where a hole is added every given turn.
+//      - A new global variable 'holeTimer' is added in case we want to make it configurable by UI later on.
+//      - Field constructor now also accept 'hardMode' Boolean argument. Default is false.
+//      - Objects created from Field class now also has the following properties:
+//          - this._hardMode (Boolean): if true, this field is a hard mode field.
+//          - this._timeCounter (starts at 0): an incremental counter to be checked against global variable 'holeTimer'
+//      - gameLoop() method:
+//          - After moving, the game will now add a new hole after every given turn (specified by global variable 'holeTimer')
+//          - The hole cannot be on the player, the existing holes, and the hat.
+//          - this._timeCounter is reset to 0 after adding a hole.
+//          - addHole() helper method is used to randomize the position of the new hole.
+//          
 
 
 const prompt = require('prompt-sync')({sigint: true});
@@ -129,15 +142,19 @@ const hat = '^';
 const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
-const playerCharacter = '☺';
 
+const playerCharacter = '☺';
 const controlScheme = ['w', 'a', 's', 'd']; // up, left, down, right
+const holeTimer = 4;
 
 class Field {
-    constructor(field, playerXPosition, playerYPosition) {
+    constructor(field, playerXPosition, playerYPosition, hardMode = false) {
         this._field = field; // 2D Array
         this._playerXPosition = playerXPosition;
         this._playerYPosition = playerYPosition;
+       
+        this._hardMode = hardMode;
+        this._timeCounter = 0;
     }
 
     print(message = '') {
@@ -222,6 +239,18 @@ class Field {
         }
     }
 
+    addHole () {
+        const x = this._field[0].length;
+        const y = this._field.length;
+        let randomX;
+        let randomY;
+        do {
+            randomX = Math.floor(Math.random() * x);
+            randomY = Math.floor(Math.random() * y);
+        } while (this._field[randomY][randomX] === hole || this._field[randomY][randomX] === hat || this._field[randomY][randomX] === playerCharacter);
+        this._field[randomY][randomX] = hole;
+    }
+
     gameLoop() {
         let gameState = true;
         let isWon;
@@ -230,7 +259,7 @@ class Field {
         do {
             this.print(message);
             this.movePlayer(controlScheme);
-            message = '';
+            message = '';        
 
             if (!this.isInBoundaries()) {
                 message = "You can't move out-of-bound!";
@@ -249,16 +278,23 @@ class Field {
                 const y = this._playerYPosition
                 this._field[y][x] = playerCharacter;
             }
+
+            this._timeCounter++;
+            if (this._hardMode === true && this._timeCounter === holeTimer) {
+                this._timeCounter = 0;
+                this.addHole();
+            }
+
         } while(gameState);
 
         if (isWon) {
-            console.log("You've found your hat!");
+            console.log("You've found your hat!\n");
         } else {
-            console.log("Oh no! You've fallen into a hole!");
+            console.log("Oh no! You've fallen into a hole!\n");
         }
     }
 
-    static generateField(x = 10, y = 10, holePercent = 0.25) {
+    static generateField(x = 10, y = 10, holePercent = 0.25, hardMode = false) {
         const fieldArray = [];
         for (let i = 0; i < y; i++) {
             const xAxis = [];
@@ -274,7 +310,7 @@ class Field {
             do {
                 randomX = Math.floor(Math.random() * x);
                 randomY = Math.floor(Math.random() * y);
-            } while (fieldArray[randomY][randomX] === hole || (randomX === 0 && randomY === 0));
+            } while (fieldArray[randomY][randomX] === hole); // '|| (randomX === 0 && randomY === 0)' is removed after refactoring to randomize player position.
             fieldArray[randomY][randomX] = hole;
         }
         
@@ -283,7 +319,7 @@ class Field {
         do {
             randomX = Math.floor(Math.random() * x);
             randomY = Math.floor(Math.random() * y);
-        } while (fieldArray[randomY][randomX] === hole || (randomX === 0 || randomY === 0));
+        } while (fieldArray[randomY][randomX] === hole); // '|| (randomX === 0 && randomY === 0)' is removed after refactoring to randomize player position.
         fieldArray[randomY][randomX] = hat;
 
         do {
@@ -292,7 +328,7 @@ class Field {
         } while (fieldArray[randomY][randomX] === hole || fieldArray[randomY][randomX] === hat)
         fieldArray[randomY][randomX] = playerCharacter;
 
-        return new Field(fieldArray, randomX, randomY);
+        return new Field(fieldArray, randomX, randomY, hardMode);
     }
 }
 
@@ -312,24 +348,25 @@ const startGame = () => {
         );
         
         const fieldSize = prompt(`Choose map size - S, (M), L: `).toLowerCase();
+        const hardMode = prompt(`Do you want to play on Hard Mode? Y/(N) `).toLowerCase() === 'y';
         let myField;
     
         switch (fieldSize) {
             case 's': 
-                myField = Field.generateField(5, 5, 0.2);
+                myField = Field.generateField(5, 5, 0.2, hardMode);
                 break;
             case 'l':
-                myField = Field.generateField(15, 15, 0.3);
+                myField = Field.generateField(15, 15, 0.3, hardMode);
                 break;
             default:
             case 'm':
-                myField = Field.generateField();
+                myField = Field.generateField(10, 10, 0.25, hardMode);
                 break;
         }
     
         myField.gameLoop();
     
-        playAgain = prompt('\nDo you want to play again? Y/(N): ').toLowerCase();
+        playAgain = prompt('Do you want to play again? Y/(N): ').toLowerCase();
     } while (playAgain === 'y');
 }
 
