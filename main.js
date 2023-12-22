@@ -1,12 +1,28 @@
 // Please copy and paste your GitHub Repo on line 2 (optional)
-// <GitHub Repo>
+// https://github.com/PrutMongkol/find-your-hat
 
 // JavaScript Assessment Rubric: https://generation.instructure.com/courses/2342/assignments/143783
 
 // Codecademy: https://www.codecademy.com/paths/front-end-engineer-career-path/tracks/fecp-javascript-syntax-part-iii/modules/fecp-challenge-project-find-your-hat/projects/find-your-hat
 
 // Please break down your thinking process step-by-step (mandatory)
-// step 1 :
+//
+// Firstly, the project is done by following a step-by-step guide on codecademy 'find your hat' project page.
+//  Step 1: Create a field object
+//      1. Create a myField object from the Field class, with pre-defined 2D array representing the field.
+//          The argument is put into this._field property, as seen in the constructor method of the Field class.
+//          -- CODE --
+//          const myField = new Field([
+//              [pathCharacter, fieldCharacter, hole],
+//              [fieldCharacter, hole, fieldCharacter],
+//              [fieldCharacter, hat, fieldCharacter]
+//          ]);
+//      2. Test that the field object is created successfully with the debug tool and observe myField variable.
+//
+//  Step 2: Create print method in Field class to print this._field property
+//      - To avoid using console.log multiple times, the 2D Array in 
+
+
 
 const prompt = require('prompt-sync')({sigint: true});
 const clear = require('clear-screen');
@@ -35,31 +51,6 @@ class Field {
         console.log(fieldString);
     }
 
-    isInBoundaries() {
-        const x = this._playerXPosition;
-        const y = this._playerYPosition;
-        const xBoundary = this._field[0].length;
-        const yBoundary = this._field.length;
-        
-        return (x > -1) && (x < xBoundary) && (y > -1) && (y < yBoundary);
-    }
-
-    isOnHole() {
-        const x = this._playerXPosition;
-        const y = this._playerYPosition;
-        const currentTile = this._field[y][x];
-        
-        return currentTile === hole;
-    }
-
-    isOnHat() {
-        const x = this._playerXPosition;
-        const y = this._playerYPosition;
-        const currentTile = this._field[y][x];
-        
-        return currentTile === hat;
-    }
-
     movePlayer(validDirection) {
         let direction;
         do {
@@ -84,6 +75,31 @@ class Field {
             this._playerXPosition++;
             break;
         }
+    }
+
+    isInBoundaries() {
+        const x = this._playerXPosition;
+        const y = this._playerYPosition;
+        const xBoundary = this._field[0].length;
+        const yBoundary = this._field.length;
+        
+        return (x > -1) && (x < xBoundary) && (y > -1) && (y < yBoundary);
+    }
+
+    isOnHole() {
+        const x = this._playerXPosition;
+        const y = this._playerYPosition;
+        const currentTile = this._field[y][x];
+        
+        return currentTile === hole;
+    }
+
+    isOnHat() {
+        const x = this._playerXPosition;
+        const y = this._playerYPosition;
+        const currentTile = this._field[y][x];
+        
+        return currentTile === hat;
     }
 
     revertPosition() {
