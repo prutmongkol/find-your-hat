@@ -50,14 +50,38 @@
 //      -   The method may take an array argument representing a control scheme. This allows the control scheme to be configurable through the UI, if desired.
 //      
 //      Testing movePlayer() method
-//      -   Create a simply field object (the same as in Step 1)
-//      -   Call object.movePlayer(), enter an input
-//          move up 'w': the console should throw an error because '-1' is put in this._field[y][x]
-//          move left 'a':  the console should throw an error because '-1' is put in this._field[y][x]
-//          move right 'd' and move down 's' should work
+//      -   Create a simple field object (the same as in Step 1)
+//      -   Call object.movePlayer(), enter an input          
 //      -   Call object.print()
+//          move up 'w': No new pathCharacter printed since it is out of bound.
+//          move left 'a': No new pathCharacter printed since it is out of bound.
 //          move right 'd': A new pathCharacter should print to the right of the starting point.
 //          move down 's': A new pathCharacter should print to the bottom of the starting point.
+//
+//  Step 3.2: Create gameLoop() method in the Field class
+//      -   A new global constant variable 'playerCharacter' is created to represent the player avatar.
+//          This is to help identify player's position in case of back-tracking to already taken path.
+//          This global variable is used inside gameLoop() method
+//
+//      gameLoop() method:
+//      -   The gameState variable:
+//          - true: the game is still ongoing
+//          - false: the game is over
+//      -   gameLoop() method repetedly asks for user input until the game is over.
+//      -   The game is over when:
+//          - Player moves into the hole tile
+//          - Player moves into the hat tile
+//      -   The variable 'isWon' is set to true if player moves into the hat tile
+//      -   Various helper methods are created to make the gameLoop() method look cleaner
+//          - isOnHole() return true if player's position is on a hole.
+//          - isOnHat() return true if player's position is on a hat.
+//          - isInBoundaries() return true if player's position is in the field.
+//          - revertPosion() is used exclusively when the player's position is out of bound. It moves player's position back to its previous posision.
+//
+//      INTERMISSION 1: Refactoring print() method
+//      -   Currently, the print() method invoke clear() function to clear the screen.
+//      -   This has a side-effect of clearing the warning message from gameLoop() when the player is out of bound.
+//      -   Now, the print() method receive an option message string to be printed after printing the field.
 
 
 const prompt = require('prompt-sync')({sigint: true});
@@ -78,13 +102,16 @@ class Field {
         this._playerYPosition = 0;
     }
 
-    print() {
+    print(message = '') {
         clear();
         let fieldString = '';
         this._field.forEach( y => {
             fieldString += y.join('') + '\n';
         });
         console.log(fieldString);
+        if (message !== '') {
+            console.log(message);
+        }
     }
 
     movePlayer(validDirection = ['w', 'a', 's', 'd']) {
@@ -158,10 +185,12 @@ class Field {
     gameLoop() {
         let gameState = true;
         let isWon;
+        let message = '';
 
         do {
-            this.print();
+            this.print(message);
             this.movePlayer(controlScheme);
+            message = '';
 
             if (this.isOnHole()) {
                 gameState = false;
@@ -170,7 +199,7 @@ class Field {
                 gameState = false;
                 isWon = true;
             } else if (!this.isInBoundaries()) {
-                console.log("You can't move out-of-bound!");
+                message = "You can't move out-of-bound!";
                 this.revertPosition();
                 const x = this._playerXPosition;
                 const y = this._playerYPosition
