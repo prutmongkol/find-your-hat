@@ -9,18 +9,25 @@
 //
 // Firstly, the project is done by following a step-by-step guide on codecademy 'find your hat' project page.
 //  Step 1: Create a field object
-//      1. Create a myField object from the Field class, with pre-defined 2D array representing the field.
+//      1.  Create a myField object from the Field class, with pre-defined 2D array representing the field.
 //          The argument is put into this._field property, as seen in the constructor method of the Field class.
+//          The first dimension of the array represents the Y axis of the playing field.
+//          The second dimension of the array (nested array) represents the X axis of the playing field.
 //          -- CODE --
 //          const myField = new Field([
 //              [pathCharacter, fieldCharacter, hole],
 //              [fieldCharacter, hole, fieldCharacter],
 //              [fieldCharacter, hat, fieldCharacter]
 //          ]);
-//      2. Test that the field object is created successfully with the debug tool and observe myField variable.
+//      2.  Test that the field object is created successfully with the debug tool and observe myField variable.
 //
 //  Step 2: Create print method in Field class to print this._field property
-//      - To avoid using console.log multiple times, the 2D Array in 
+//      -   To avoid using console.log multiple times, the X axes (nested array) of this._field are joined together with .join() array method, ending with '\n' line break character.
+//      -   The resulting string is concatenated to the variable 'fieldString', which will be logged into the console later.
+//      -   The .forEach() method is used to interate through the Y axes of this._field.
+//      -   Log the variable 'fieldString'
+//
+//  Step 3: 
 
 
 
@@ -46,7 +53,7 @@ class Field {
         clear();
         let fieldString = '';
         this._field.forEach( y => {
-        fieldString += y.join('') + '\n';
+            fieldString += y.join('') + '\n';
         });
         console.log(fieldString);
     }
